@@ -14,7 +14,7 @@ def create_app(test_config=None):
     # Create and configure the app
 
     app = Flask(__name__, instance_relative_config=True)
-    # __name__: the name of the current Python module (import name - root path)
+    # __name__: the name of the current Python module (import name)
     # The second argument tells the app that configuration files are relative
     # to the instance folder
 
@@ -34,5 +34,13 @@ def create_app(test_config=None):
         # Load the test config if passed in
         app.config.from_mapping(test_config)  # Use test configuration instead
         # of instance configuration
+
+    # Ensure the instance folder exists
+    try:
+        # Since Flask doesn't create the instance folder automatically,
+        os.makedirs(app.instance_path)  # Ensure its existance, because the
+        # project will create the SQLite database file there
+    except OSError:
+        pass
 
     return app
