@@ -15,7 +15,8 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 def register():
     # If the user submitted the form
     if request.method == 'POST':
-        # Map submitted form keys and values (request.form) of username and pa
+        # Map submitted form keys and values (request.form) of username and
+        # password
         username = request.form['username']
         password = request.form['password']
 
@@ -25,7 +26,7 @@ def register():
         # Start validating the input (username and password)
         if not username:  # if the username is empty
             error = 'A username is required.'
-        elif not username:  # if the password is empty
+        elif not password:  # if the password is empty
             error = 'A password is required.'
 
         if error is None:  # If the validation succeeds
@@ -36,9 +37,12 @@ def register():
                     (username, generate_password_hash(password)),
                 )
                 db.commit()  # Save the changes
-            except db.IntegrityError:
-                # If the username already exist a db.IntegrityError will occur
-                error = f"User {username} is already registered."
+            except db.IntegrityError as e:
+                # Handle integrity error
+                if 'UNIQUE constraint' in str(e):  # Unique username constraint violated
+                    error = f"Username '{username}' is already registered."
+                else:
+                    error = f"An error occurred while registering. Please try again later."
             else:
                 # After registering a user, redirect to the login page
                 return redirect(url_for('auth.login'))
