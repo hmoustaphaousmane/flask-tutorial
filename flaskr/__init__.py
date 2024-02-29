@@ -21,8 +21,8 @@ def create_app(test_config=None):
     # Set some default configurations
     app.config.from_mapping(
         SECRET_KEY='dev',  # Used by Flask and extension to keep data safe
-        DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite')  # Path where
-        # the SQLite database file will be saved
+        DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
+        # Path where the SQLite database file will be saved
     )
 
     if test_config is None:
@@ -36,11 +36,18 @@ def create_app(test_config=None):
         # of instance configuration
 
     # Ensure the instance folder exists
+    # ensure the instance folder exists
     try:
         # Since Flask doesn't create the instance folder automatically,
         os.makedirs(app.instance_path)  # Ensure its existance, because the
         # project will create the SQLite database file there
     except OSError:
         pass
+
+    # A simple page that says hello
+    # Route that creates the connections between the URL '/hello' and the func
+    @app.route('/hello')
+    def hello():
+        return 'Hello, World!'
 
     return app
