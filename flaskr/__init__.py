@@ -25,4 +25,14 @@ def create_app(test_config=None):
         # the SQLite database file will be saved
     )
 
+    if test_config is None:
+        # Load the instance config, if it exists, when not testing
+        app.config.from_pyfile('config.py', silent=True)  # Override the
+        # default configurations 👆 with values taken from the `config.py` file
+        # in instance folder if it exists
+    else:
+        # Load the test config if passed in
+        app.config.from_mapping(test_config)  # Use test configuration instead
+        # of instance configuration
+
     return app
