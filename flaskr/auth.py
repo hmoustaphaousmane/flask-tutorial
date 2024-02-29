@@ -1,5 +1,5 @@
 from flask import (
-    flash, Blueprint, redirect, render_template, request, url_for
+    flash, Blueprint, g, redirect, render_template, request, session, url_for
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -8,6 +8,7 @@ from flaskr.db import get_db
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
+# REGISTER VIEW
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
     # If the user submitted the form
@@ -43,3 +44,37 @@ def register():
         flash(error)  # Show the error to the user
 
     return render_template('auth/register.html')  # Render registration page
+
+
+# LOGIN VIEW
+@bp.route('/login', methods=('GET', 'POST'))
+def login():
+    # If the form is submitted
+    if request.method == 'POST':
+        # Map submitted form keys and values (request.form) of username and pa
+        username = request.form['username']
+        password = request.form['password']
+
+        db = get_db()  # Get a database connection
+        error = None
+
+        # Query and store the user
+        user = db.execute(
+            'SELECT * FROM user WHERE username = ?', (username,)
+        ).fetchone  # Return one row from the query
+
+        if user is None:  # If the user does not exists
+            error = 'Incorrect username.'
+        elif not check_password_hash(user['password'], password):
+            # If the password is not valid (the submitted password is not
+            # hashed in the same way as the stored hash)
+            error = 'Incorrect password.'
+
+        if error is None:
+            session.clear()  # Clear the session
+            session['user_id'] = user['id']  # Store user's id in the session
+            return redirect(url_for('index'))
+
+        flash(error)
+
+    return render_template('auth/login.html')
