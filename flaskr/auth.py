@@ -49,7 +49,7 @@ def register():
 
         flash(error)  # Show the error to the user
 
-    return render_template('auth/register.html')  # Render registration page
+    return render_template('register.html')  # Render registration page
 
 
 # LOGIN VIEW
@@ -67,7 +67,7 @@ def login():
         # Query and store the user
         user = db.execute(
             'SELECT * FROM user WHERE username = ?', (username,)
-        ).fetchone  # Return one row from the query
+        ).fetchone()  # Return one row from the query
 
         if user is None:  # If the user does not exists
             error = 'Incorrect username.'
@@ -83,7 +83,7 @@ def login():
 
         flash(error)
 
-    return render_template('auth/login.html')
+    return render_template('login.html')
 
 
 # At the beginning of each request, if a user is logged in, load and make
@@ -98,7 +98,7 @@ def load_logged_in_user():
         # Get the user's data from the database
         g.user = get_db().execute(
             'SELECT * FROM user WHERE id = ?', (user_id,)
-        ).fetchone  # g.user lasts for the length of the request
+        ).fetchone()  # g.user lasts for the length of the request
 
 
 # LOGOUT VIEW
