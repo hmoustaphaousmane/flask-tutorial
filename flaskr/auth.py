@@ -1,3 +1,5 @@
+import functools
+
 from flask import (
     flash, Blueprint, g, redirect, render_template, request, session, url_for
 )
@@ -100,3 +102,16 @@ def load_logged_in_user():
 def logout():
     session.clear()  # Clear the session (remove user's data from the session)
     return redirect(url_for('index'))
+
+
+# Decorator: require authentication in other views
+def login_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        """Wrapper function that checks for login"""
+        if g.user is None:  # If a user is not logged in
+            return redirect(url_for('auth.login'))  # Take to the login page
+
+        return view(**kwargs)  # Otherwise, call the decorated view
+
+    return wrapped_view  # Return the wrapped view
