@@ -1,12 +1,16 @@
+<!-- Tell Jinja that this template should replace the blocks from the base template -->
 {% extends 'base.html' %}
 
+<!-- Set the header block -->
 {% block header %}
+    <!-- Set the title block and output its value in the header block -->
     <h1>{% block title %}Register{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
     <form method="post">
         <label for="username">Username</label>
+        <!-- The required attribute tells the browser not to submit the form until the field is filled -->
         <input name="username" id="username" required>
         <label for="password">Password</label>
         <input type="password" name="password" id="password" required>

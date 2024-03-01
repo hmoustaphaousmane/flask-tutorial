@@ -1,13 +1,18 @@
+<!-- The three blocks defined here will be overriden in the other templates -->
 <!DOCTYPE html>
+<!-- The title block will change the title displayed in the browser's tab and window title -->
 <title>{% block title %}{% endblock %} - Flaskr</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='styel.css') }}">
 <nav>
     <h1>Flaskr</h1>
     <ul>
-        {% if g.user %}
+        <!-- If g.user is set -->
+        {% if g.user %} <!-- g is automatically available in templates -->
+            <!-- Display the username and logout link-->
             <li><span>{{ g.user['username'] }}</span></li>
             <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
-        {% else %}
+        {% else %} <!-- Otherwise -->
+            <!-- Show the Register and Log in links -->
             <li><a href="{{ url_for('auth.register') }}">Register</a></li>
             <li><a href="{{ url_for('auth.login') }}">Log in</a></li>
         {% endif %}
@@ -15,10 +20,14 @@
 </nav>
 <section class="content">
     <header>
+        <!-- Title displayed in the page block -->
         {% block header %}{% endblock %}
     </header>
+    <!-- Loop over each message returned by get_flashed_messages() -->
     {% for message in get_flashed_messages() %}
+        <!-- Display the message -->
         <div class="flash">{{ message }}</div>
     {% endfor %}
+    <!-- This block is where the content of each page goes -->
     {% block content %}{% endblock %}
 </section>
