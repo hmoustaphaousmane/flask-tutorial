@@ -41,3 +41,31 @@ def client(app):
 def runner(app):
     # Create a runner that can call the Click commands registered with the app
     return app.test_cli_runner()
+
+
+class AuthAction(object):
+    def __init__(self, client):
+        self._client = client
+
+    def login(self, username='test', password='test'):
+        """
+        Perform a login request using the test client and return the response
+        object from it
+        """
+        return self._client.post(
+            '/auth/login',
+            data={'username': username, 'password': password}
+        )
+
+    def logout(self):
+        """Perform a logout request and return the response object from it"""
+        return self._client.get('/auth/logout')
+
+
+@pytest.fixture
+def auth(client):
+    """
+    Create and return an instance of the AuthAction using the test client
+    fixture
+    """
+    return AuthAction(client)
