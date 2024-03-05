@@ -1,5 +1,5 @@
 import pytest
-from flaskr import g, session
+from flaskr.auth import g, session
 from flaskr.db import get_db
 
 
@@ -19,14 +19,14 @@ def test_register(client, app):
     with app.app_context():
         assert get_db().execute(
             "SELECT * FROM user WHERE username = 'a'",
-        ).fetchone() is None
+        ).fetchone() is not None
 
 
 # Tell Pytest to run the same test function with different arguments thanks to
 # `pytest.mark.parametrize`
 @pytest.mark.parametrize(('username', 'password', 'message'), (
-    ('', '', b'Username is required.'),
-    ('a', '', b'Password is required.'),
+    ('', '', b'A username is required.'),
+    ('a', '', b'A password is required.'),
     ('test', 'test', b'already registered'),
 ))
 def test_register_validate_input(client, username, password, message):

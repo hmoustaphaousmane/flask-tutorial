@@ -43,6 +43,6 @@ def test_init_db_command(runner, monkeypatch):
     result = runner.invoke(args=['init-db'])
 
     # Assert successful initialization
-    assert 'Initialized' in result.output
+    assert 'initialized' in result.output
     # Assert that The init_db function should have been called
     assert Recorder.called
